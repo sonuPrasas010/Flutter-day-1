@@ -1,10 +1,10 @@
+import 'package:demo/home_screen.dart';
 import 'package:demo/new_item.dart';
 import 'package:flutter/material.dart';
 
 void main() {
- runApp(MyApp());
+  runApp(MyApp());
 }
- 
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,8 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: NewItem(),
+      home: HomeScreen(),
     );
   }
 }
-
