@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:demo/components/text_title.dart';
 import 'package:demo/new_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'components/to_do_list_item.dart';
@@ -34,6 +37,34 @@ class _HomeScreenState extends State<HomeScreen> {
       "title": "This is the title",
     },
   ];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    // calls itself before ui is rendered on screen
+    loadData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // calls itself after ui is removed on screen
+
+    super.dispose();
+  }
+
+  void loadData() async {
+    //
+    // post
+    await Future.delayed(
+      Duration(seconds: 3),
+      () {
+        setState(() {
+          isLoading = false;
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,84 +83,89 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-            TextTitle("Uncompleted"),
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 8,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Color(0XFFe9defe),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: isLoading
+            ? CircularProgressIndicator()
+            : ListView(
                 children: [
-                  for (var i = 0; i < uncompletedTasks.length; i++)
-                    Column(
+                  TextTitle("Uncompleted"),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Color(0XFFe9defe),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ToDoListItem(uncompletedTasks[i], "uncompleted", () {
-                          setState(() {
-                            uncompletedTasks.removeAt(i);
-                          });
-                        }, () {
-                          setState(() {
-                            var temp = uncompletedTasks[i];
-                            uncompletedTasks.removeAt(i);
-                            completedTask.add(temp);
-                          });
-                        }),
-                        Divider(),
+                        for (var i = 0; i < uncompletedTasks.length; i++)
+                          Column(
+                            children: [
+                              ToDoListItem(uncompletedTasks[i], "uncompleted",
+                                  () {
+                                setState(() {
+                                  uncompletedTasks.removeAt(i);
+                                });
+                              }, () {
+                                setState(() {
+                                  var temp = uncompletedTasks[i];
+                                  uncompletedTasks.removeAt(i);
+                                  completedTask.add(temp);
+                                });
+                              }),
+                              Divider(),
+                            ],
+                          ),
                       ],
                     ),
-                ],
-              ),
-            ),
-            TextTitle("Completed"),
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: 8,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Color(0XFFe9defe),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (var i = 0; i < completedTask.length; i++)
-                    Column(
+                  ),
+                  TextTitle("Completed"),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Color(0XFFe9defe),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ToDoListItem(completedTask[i], "completed", () {
-                          setState(() {
-                            completedTask.removeAt(i);
-                          });
-                        }, () {
-                          setState(() {
-                            var temp = completedTask[i];
-                            completedTask.removeAt(i);
-                            uncompletedTasks.add(temp);
-                          });
-                        }),
-                        Divider(),
+                        for (var i = 0; i < completedTask.length; i++)
+                          Column(
+                            children: [
+                              ToDoListItem(completedTask[i], "completed", () {
+                                setState(() {
+                                  completedTask.removeAt(i);
+                                });
+                              }, () {
+                                setState(() {
+                                  var temp = completedTask[i];
+                                  completedTask.removeAt(i);
+                                  uncompletedTasks.add(temp);
+                                });
+                              }),
+                              Divider(),
+                            ],
+                          ),
                       ],
                     ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => NewItem(),
               ));
+
+          // log("page push balla balla vayo");
         },
         child: Icon(
           Icons.add,
