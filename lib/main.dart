@@ -1,5 +1,4 @@
 import 'package:demo/home_screen.dart';
-import 'package:demo/new_item.dart';
 import 'package:flutter/material.dart';
 
 void main() {

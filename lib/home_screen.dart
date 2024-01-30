@@ -13,30 +13,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Map<String, dynamic>> completedTask = [
-    {
-      "category_name": "school",
-      "description": "This is the description of completed task",
-      "title": "This is the title",
-    },
-    {
-      "category_name": "market",
-      "description": "This is the description of completed task",
-      "title": "This is the title",
-    },
-  ];
-  List<Map<String, dynamic>> uncompletedTasks = [
-    {
-      "category_name": "school",
-      "description": "This is the description of uncompleted task",
-      "title": "This is the title",
-    },
-    {
-      "category_name": "market",
-      "description": "This is the description of uncompleted task",
-      "title": "This is the title",
-    },
-  ];
+  List<Map<String, dynamic>> completedTask = [];
+  List<Map<String, dynamic>> uncompletedTasks = [];
   bool isLoading = true;
 
   @override
@@ -131,40 +109,48 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(6),
                       color: Color(0XFFe9defe),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (var i = 0; i < completedTask.length; i++)
-                          Column(
+                    child: completedTask.isEmpty
+                        ? Center(
+                            child: Text("Empty text"),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ToDoListItem(completedTask[i], "completed", () {
-                                setState(() {
-                                  completedTask.removeAt(i);
-                                });
-                              }, () {
-                                setState(() {
-                                  var temp = completedTask[i];
-                                  completedTask.removeAt(i);
-                                  uncompletedTasks.add(temp);
-                                });
-                              }),
-                              Divider(),
+                              for (var i = 0; i < completedTask.length; i++)
+                                Column(
+                                  children: [
+                                    ToDoListItem(completedTask[i], "completed",
+                                        () {
+                                      setState(() {
+                                        completedTask.removeAt(i);
+                                      });
+                                    }, () {
+                                      setState(() {
+                                        var temp = completedTask[i];
+                                        completedTask.removeAt(i);
+                                        uncompletedTasks.add(temp);
+                                      });
+                                    }),
+                                    Divider(),
+                                  ],
+                                ),
                             ],
                           ),
-                      ],
-                    ),
                   ),
                 ],
               ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(
+          // ahdfhasdfhjsdf
+          var returnedValud = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => NewItem(),
               ));
-
+          setState(() {
+            this.uncompletedTasks.insert(0, returnedValud);
+          });
           // log("page push balla balla vayo");
         },
         child: Icon(
@@ -172,5 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future someFunction() async {
+    return "null";
   }
 }
